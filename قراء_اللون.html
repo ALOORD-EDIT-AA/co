@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>لعبة الألوان | تحدي الدماغ</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px 40px;
+    gap: 20px;
+  }
+
+  /* حاوية رئيسية لتحكم أفضل بالعرض */
+  .game-container {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  h1 {
+    color: #f5f5fa;
+    font-size: clamp(1.2rem, 5.5vw, 1.9rem);
+    font-weight: 900;
+    text-align: center;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    padding: 8px 20px;
+    border-radius: 60px;
+    letter-spacing: -0.3px;
+    line-height: 1.4;
+  }
+
+  .hint {
+    color: #cbd5e6;
+    font-size: clamp(0.75rem, 3.2vw, 1rem);
+    text-align: center;
+    background: rgba(0,0,0,0.3);
+    padding: 6px 18px;
+    border-radius: 40px;
+    display: inline-block;
+    backdrop-filter: blur(2px);
+    font-weight: 700;
+  }
+
+  /* الشبكة الذكية - تتكيف مع جميع الأجهزة */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    width: 100%;
+    background: rgba(255,255,255,0.03);
+    padding: 20px 16px;
+    border-radius: 48px;
+    backdrop-filter: blur(2px);
+    transition: all 0.2s ease;
+  }
+
+  /* كروت الكلمات - تصميم مرن ولمسات تفاعلية */
+  .word {
+    font-size: clamp(1.1rem, 5vw, 2rem);
+    font-weight: 900;
+    text-align: center;
+    padding: 12px 4px;
+    cursor: default;
+    user-select: none;
+    background: rgba(20,20,40,0.6);
+    border-radius: 20px;
+    transition: transform 0.1s ease, background 0.2s;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    word-break: break-word;
+    line-height: 1.2;
+  }
+
+  /* تأثير بسيط عند اللمس / hover للأجهزة المكتبية */
+  .word:active {
+    transform: scale(0.96);
+    background: rgba(255,255,255,0.12);
+  }
+
+  @media (hover: hover) {
+    .word:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+  }
+
+  /* زر التحديث - مناسب للإبهام */
+  button {
+    background: #2c3e66;
+    color: #f0f3fc;
+    border: none;
+    border-radius: 60px;
+    padding: 14px 32px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 900;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 8px 18px rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    width: auto;
+    min-width: 180px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  button:active {
+    transform: scale(0.96);
+    background: #3e5a8a;
+  }
+
+  @media (hover: hover) {
+    button:hover {
+      background: #3f5e8c;
+      transform: translateY(-2px);
+    }
+  }
+
+  /* إضافة دعم كامل للأجهزة الصغيرة جدًا */
+  @media (max-width: 550px) {
+    .grid {
+      gap: 8px;
+      padding: 12px 8px;
+    }
+    .word {
+      padding: 8px 2px;
+      border-radius: 16px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      min-width: 150px;
+    }
+    body {
+      padding: 16px 12px 32px;
+      gap: 16px;
+    }
+  }
+
+  /* للأجهزة الصغيرة جدًا (هواتف ضيقة) - شبكة 3 أعمدة لضمان وضوح النص */
+  @media (max-width: 480px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .word {
+      font-size: clamp(1rem, 5.5vw, 1.7rem);
+      padding: 10px 4px;
+    }
+    h1 {
+      font-size: clamp(1rem, 5vw, 1.5rem);
+    }
+  }
+
+  /* للأجهزة اللوحية المتوسطة */
+  @media (min-width: 481px) and (max-width: 768px) {
+    .grid {
+      gap: 12px;
+    }
+    .word {
+      font-size: 1.4rem;
+      padding: 12px 4px;
+    }
+  }
+
+  /* للشاشات الكبيرة */
+  @media (min-width: 1200px) {
+    .grid {
+      max-width: 900px;
+      gap: 18px;
+    }
+    .word {
+      font-size: 2.1rem;
+      padding: 16px 8px;
+    }
+  }
+
+  /* تحسين اللمس لأجهزة اللمس */
+  @media (pointer: coarse) {
+    .word {
+      padding: 14px 4px;
+    }
+    button {
+      padding: 14px 28px;
+    }
+  }
+
+  /* رسالة تفاعلية صغيرة */
+  .footer-note {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    margin-top: -6px;
+  }
+</style>
+</head>
+<body>
+<!-- NAVBAR -->
+<div style="position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;gap:10px;background:rgba(15,23,42,0.88);backdrop-filter:blur(20px);padding:10px 20px;border-radius:60px;border:1px solid rgba(255,255,255,0.12);box-shadow:0 8px 32px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04);font-family:Cairo,Tajawal,sans-serif;white-space:nowrap;">
+  <a href="https://aloord-edit-aa.github.io/jolat/" style="display:flex;align-items:center;gap:6px;color:#f1f5f9;text-decoration:none;font-size:0.85rem;font-weight:700;padding:7px 14px;border-radius:40px;transition:all 0.2s;background:rgba(255,255,255,0.06);" onmouseover="this.style.background='rgba(14,165,233,0.25)';this.style.color='#38bdf8'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'">🗓️ جولات دراسية</a>
+  <a href="https://aloord-edit-aa.github.io/tawjihuk-AA/" style="display:flex;align-items:center;gap:6px;color:#f1f5f9;text-decoration:none;font-size:0.85rem;font-weight:700;padding:7px 14px;border-radius:40px;transition:all 0.2s;background:rgba(255,255,255,0.06);" onmouseover="this.style.background='rgba(14,165,233,0.25)';this.style.color='#38bdf8'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'">📅 تخطيط يومي</a>
+  <a href="https://aloord-edit-aa.github.io/co/" style="display:flex;align-items:center;gap:6px;color:#f1f5f9;text-decoration:none;font-size:0.85rem;font-weight:700;padding:7px 14px;border-radius:40px;transition:all 0.2s;background:rgba(255,255,255,0.06);" onmouseover="this.style.background='rgba(14,165,233,0.25)';this.style.color='#38bdf8'" onmouseout="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'">🧠 تنشيط المخ</a>
+</div>
+
+<div class="game-container">
+  <h1>🧠 اقرأ لون الكلمة، مش الكلمة نفسها!</h1>
+  <p class="hint">🎯 تجاهل المعنى ✨ ركّز على لون الحروف</p>
+
+  <div class="grid" id="grid" aria-label="شبكة تحدي الألوان، كل مربع يحتوي على كلمة بلون مختلف"></div>
+
+  <button onclick="generate()" aria-label="خلط الكلمات وتجديد التحدي">
+    🔀 خلّط من جديد
+  </button>
+  <p class="hint footer-note">✨ أسود · أحمر · أصفر · أخضر · أزرق · برتقالي · زهري · أزرق فاتح · أبيض</p>
+</div>
+
+<script>
+  // ============================================================
+  // الألوان المطلوبة فقط: 
+  // أسود، أحمر، أصفر، أخضر، أزرق، برتقالي، زهري، أزرق فاتح، أبيض
+  // ============================================================
+  const COLORS = [
+    { name: 'أسود',    hex: '#1e1e2f' },      // أسود داكن للخلفية لكن لجعل النص مقروء سنعرض الأسود بلون فاتح (أبيض مائل للرمادي) لأن خلفية المربعات داكنة
+    { name: 'أحمر',    hex: '#e53e3e' },
+    { name: 'أصفر',    hex: '#facc15' },
+    { name: 'أخضر',    hex: '#4ade80' },
+    { name: 'أزرق',    hex: '#3b82f6' },
+    { name: 'برتقالي', hex: '#f97316' },
+    { name: 'زهري',    hex: '#f472b6' },      // زهري وردي جميل
+    { name: 'أزرق فاتح', hex: '#7dd3fc' },    // أزرق فاتح (سماءي)
+    { name: 'أبيض',    hex: '#ffffff' }
+  ];
+
+  // ============================================================
+  // معالجة خاصة للون الأسود: عندما تظهر كلمة "أسود" كلون النص،
+  // نريدها تكون مقروءة على الخلفية الداكنة. لذلك نعطيها لون أبيض رمادي فاتح جداً.
+  // لكن الحفاظ على التباين: أي كلمة اسمها "أسود" سيكون لونها أبيض ناصع (أو فاتح).
+  // أما بالنسبة لباقي الألوان نستخدم نفس الـ hex مع ضمان تباين جيد.
+  // ننشئ مصفوفة DISPLAY_COLORS التي تحدد الألوان الفعلية للخط مع ضبط "أسود" كلون فاتح.
+  // ============================================================
+  const DISPLAY_COLORS = COLORS.map(c => {
+    if (c.name === 'أسود') {
+      // الأسود كلون نص: نجعله أبيض ثلجي ليبرز على الخلفية الداكنة للمربعات
+      return { ...c, hex: '#f1f5f9' };   // أبيض مائل للرمادي الفاتح جداً، مقروء تماماً
+    }
+    if (c.name === 'أبيض') {
+      // الأبيض كلون نص على خلفية المربعات الداكنة يظهر جيداً، لكن نضيف تباين إضافي
+      return { ...c, hex: '#ffffff' };
+    }
+    // الألوان الأخرى تبقى كما هي زاهية ومناسبة
+    return { ...c };
+  });
+
+  // دالة خلط عشوائي (Fisher-Yates)
+  function shuffleArray(arr) {
+    const array = [...arr];
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  // دالة للحصول على لون عرض مختلف تمامًا عن معنى الكلمة (الاسم)
+  // يجب أن يختلف لون الخط (display color) عن اسم الكلمة نفسها.
+  // المعطيات: baseColors (قائمة الألوان المتاحة للعرض)، excludeWordName (اسم الكلمة الذي لا يجب أن يتطابق مع لون الخط)
+  // نضمن اختيار لون مختلف تمامًا من حيث المعنى (أي hex مختلف واسم مختلف)
+  function getRandomDifferentColor(baseColorsArray, excludeWordName) {
+    // فلترة الألوان التي لا تحمل نفس الاسم المستبعد (يختلف المعنى)
+    const possibleColors = baseColorsArray.filter(c => c.name !== excludeWordName);
+    if (possibleColors.length === 0) {
+      // حالة نادرة: إذا كان الاستثناء يغطي كل الألوان (يحدث فقط لو عندنا لون واحد فقط، لكن عندنا 9 ألوان)
+      return baseColorsArray[0];
+    }
+    const randomIndex = Math.floor(Math.random() * possibleColors.length);
+    return possibleColors[randomIndex];
+  }
+
+  // دالة توليد شبكة 5×5 (25 كلمة) بضمان أن لون النص مختلف تماماً عن معنى الكلمة
+  function generate() {
+    const gridContainer = document.getElementById('grid');
+    if (!gridContainer) return;
+    
+    // مسح المحتوى السابق
+    gridContainer.innerHTML = '';
+    
+    const TOTAL_ITEMS = 25; // 5x5 شبكة مثالية
+
+    // قائمة بأسماء الألوان المتاحة (الكلمات التي سنعرضها)
+    const colorWordsList = [...COLORS];  // نستخدم الأسماء الأصلية مثل "أسود"، "أحمر" إلخ
+    
+    for (let i = 0; i < TOTAL_ITEMS; i++) {
+      // 1) اختيار اسم اللون (الكلمة) بشكل عشوائي من الألوان الأساسية (جميع الألوان المطلوبة)
+      const randomWordObj = colorWordsList[Math.floor(Math.random() * colorWordsList.length)];
+      const wordText = randomWordObj.name;  // النص المعروض مثل "أزرق فاتح", "زهري"
+      
+      // 2) اختيار لون العرض (لون الحروف) بشكل يختلف تماماً عن معنى الكلمة
+      // نستخدم DISPLAY_COLORS التي تحتوي على التعديلات (مثلاً الأسود كلون نص فاتح)
+      let displayColorObj = getRandomDifferentColor(DISPLAY_COLORS, wordText);
+      
+      // إنشاء عنصر الكلمة
+      const wordSpan = document.createElement('span');
+      wordSpan.className = 'word';
+      wordSpan.textContent = wordText;
+      // تعيين لون الخط بناءً على اللون المختار
+      wordSpan.style.color = displayColorObj.hex;
+      
+      // تحسين إمكانية الوصول
+      wordSpan.setAttribute('aria-label', `كلمة "${wordText}" مكتوبة بلون ${displayColorObj.name}`);
+      
+      gridContainer.appendChild(wordSpan);
+    }
+  }
+
+  // تحميل أولي فور تحميل الصفحة
+  generate();
+
+  // ربط الدالة بشكل آمن بالزر الموجود (onclick)
+  window.generate = generate;
+  
+  // إضافة تحديث اختياري عند تغيير اتجاه الجهاز (ليس ضرورياً لكنه يضمن عدم تشوه الشبكة)
+  window.addEventListener('resize', () => {
+    // مجرد تمرير بسيط للتأكد من عدم حدوث أي انزياح في الشبكة - لا حاجة لإعادة التوليد
+    // فقط نضمن أن grid يتكيف عبر CSS
+  });
+  
+  // إضافة رسالة في console للتأكد
+  console.log("🎨 لعبة الألوان - الإصدار المخصص: أسود، أحمر، أصفر، أخضر، أزرق، برتقالي، زهري، أزرق فاتح، أبيض");
+</script>
+</body>
+</html>
